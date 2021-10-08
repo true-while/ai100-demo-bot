@@ -200,6 +200,12 @@ namespace Microsoft.BotBuilderSamples.Bots
                 case "pizza":
                     await MainResponses.ReplyWithReceiptCard(stepContext.Context);
                     return await stepContext.EndDialogAsync();
+                case "ai-102":
+                    await MainResponses.ReplyWithHeroCard(stepContext.Context);
+                    return await stepContext.EndDialogAsync();
+                case "thumb":
+                    await MainResponses.ReplyThumbnailCard(stepContext.Context);
+                    return await stepContext.EndDialogAsync();
                 case "rich card":
                     await MainResponses.ReplyWithRichCard(stepContext.Context);
                     return await stepContext.EndDialogAsync();

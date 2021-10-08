@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using AdaptiveCards;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Schema;
+using AdaptiveCards;
+using Newtonsoft.Json;
 
 namespace Microsoft.BotBuilderSamples.Responses
 {
@@ -215,6 +217,121 @@ namespace Microsoft.BotBuilderSamples.Responses
         public static async Task ReplyWithResumeTopic(ITurnContext context, Func<string, string> translate)
         {
             await context.SendActivityAsync(translate.Invoke($"What can I do for you?"));
+        }
+
+        public static async Task ReplyWithHeroCard(ITurnContext context)
+        {
+            Activity replyToConversation = context.Activity.CreateReply("");
+            replyToConversation.Attachments = new List<Attachment>();
+
+           
+            AdaptiveCardParseResult result = AdaptiveCard.FromJson(@"{
+                        'type': 'AdaptiveCard',
+                        'body': [
+                            {
+                                'type': 'TextBlock',
+                                'size': 'Medium',
+                                'weight': 'Bolder',
+                                'text': 'Microsoft Certified: Azure AI Engineer Associate'
+                            },
+                            {
+                                'type': 'ColumnSet',
+                                'columns': [
+                                    {
+                                        'type': 'Column',
+                                        'items': [
+                                            {
+                                                'type': 'Image',
+                                                'style': 'Person',
+                                                'url': 'https://dynamicsedge.com/wp-content/uploads/Azure-AI-Engineer-Associate-Badge-Azure-Certification-Exam-AI-100-Microsoft-Azure-Artificial-Intelligence-AI-Engineer-Certification-Training-Design-Implementation-1.png',
+                                                'size': 'Medium'
+                                            }
+                                        ],
+                                        'width': 'auto'
+                                    },
+                                    {
+                                        'type': 'Column',
+                                        'items': [
+                                            {
+                                                'type': 'TextBlock',
+                                                'weight': 'Bolder',
+                                                'text': '4-days prep session',
+                                                'wrap': true
+                                            },
+                                            {
+                                                'type': 'TextBlock',
+                                                'spacing': 'None',
+                                                'text': 'Started {{DATE(2017-02-14T06:08:39Z,SHORT)}}',
+                                                'isSubtle': true,
+                                                'wrap': true
+                                            },
+                                            {
+                                                'type': 'TextBlock',
+                                                'text': 'Azure AI Engineers use Cognitive Services, Machine Learning, and Knowledge Mining to architect and implement Microsoft AI solutions involving natural language processing, speech, computer vision, bots, and agents.',
+                                                'wrap': true
+                                            }
+                                        ],
+                                        'width': 'stretch'
+                                    }
+                                ]
+                            },
+                            {
+                                'type': 'FactSet',
+                                'facts': [
+                                    {
+                                        'title': 'Required exam:',
+                                        'value': 'AI-102'
+                                    }
+                                ]
+                            }
+                        ],
+                        'actions': [
+                            {
+                                'type': 'Action.ShowCard',
+                                'title': 'Schedule your exam now',
+                                'card': {
+                                    'type': 'AdaptiveCard',
+                                    'body': [
+                                        {
+                                            'type': 'Input.Date',
+                                            'id': 'dueDate'
+                                        },
+                                        {
+                                            'type': 'Input.Text',
+                                            'id': 'comment',
+                                            'placeholder': 'Add a comment',
+                                            'isMultiline': true
+                                        }
+                                    ],
+                                    'actions': [
+                                        {
+                                            'type': 'Action.Submit',
+                                            'title': 'OK'
+                                        }
+                                    ],
+                                    '$schema': 'http://adaptivecards.io/schemas/adaptive-card.json'
+                                },
+                                'style': 'destructive'
+                            }
+                        ],
+                        '$schema': 'http://adaptivecards.io/schemas/adaptive-card.json',
+                        'version': '1.3',
+                        'selectAction': {
+                            'type': 'Action.OpenUrl',
+                            'url': 'https://docs.microsoft.com/en-us/learn/certifications/exams/ai-102',
+                            'title': 'Exam'
+                        }
+                    }");
+
+
+            Attachment attachment = new Attachment()
+            {
+                ContentType = AdaptiveCard.ContentType,
+                Content = result.Card
+            };
+            replyToConversation.Attachments.Add(attachment);
+
+            await context.SendActivityAsync(replyToConversation);
         }
 
         public static async Task ReplyWithSentiment(ITurnContext context,  Func<string, decimal> detectSentiment)

@@ -26,6 +26,8 @@ namespace Microsoft.Bot.Builder.EchoBot
             .AddIntent("rich card", new Regex("rich card", RegexOptions.IgnoreCase))
             .AddIntent("pizza", new Regex("pizza", RegexOptions.IgnoreCase))
             .AddIntent("lang", new Regex("lang", RegexOptions.IgnoreCase))
+            .AddIntent("thumb", new Regex("thumb", RegexOptions.IgnoreCase))
+            .AddIntent("ai-102", new Regex("ai-102", RegexOptions.IgnoreCase))
             );
 
             //read Cosmos DB settings from appsettings.json
